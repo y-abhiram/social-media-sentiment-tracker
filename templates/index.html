@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sentiment Dashboard</title>
+    <style>
+        body { font-family: Arial; margin: 40px; background: #f4f4f4; }
+        h1 { color: #333; }
+        .plot-container { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+    </style>
+</head>
+<body>
+    <h1>📈 Sentiment Analysis Dashboard</h1>
+    <div class="plot-container">
+        {{ plot|safe }}
+    </div>
+</body>
+</html>
+

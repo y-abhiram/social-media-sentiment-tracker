@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sentiment Analysis Dashboard</title>
+    <meta http-equiv="refresh" content="60">
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            padding: 30px;
+        }
+        .card {
+            margin-bottom: 20px;
+        }
+        .header {
+            font-size: 2em;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header mb-4">📊 Sentiment Analysis Dashboard</div>
+
+        <!-- Stats -->
+        <div class="row text-center">
+            <div class="col-md-3"><div class="card"><div class="card-body">Total Tweets<br><strong>{{ total }}</strong></div></div></div>
+            <div class="col-md-3"><div class="card"><div class="card-body">Positive<br><strong class="text-success">{{ positive }}</strong></div></div></div>
+            <div class="col-md-3"><div class="card"><div class="card-body">Neutral<br><strong class="text-primary">{{ neutral }}</strong></div></div></div>
+            <div class="col-md-3"><div class="card"><div class="card-body">Negative<br><strong class="text-danger">{{ negative }}</strong></div></div></div>
+        </div>
+        <div class="text-center mb-4"><strong>Average Sentiment Score:</strong> {{ avg }}</div>
+
+        <!-- Scatter Plot -->
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Sentiment Over Time</h5>
+                <div id="scatter_plot"></div>
+            </div>
+        </div>
+
+        <!-- Pie Chart -->
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Sentiment Distribution</h5>
+                <div id="pie_chart"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        var scatterPlot = {{ scatter_plot_json | safe }};
+        Plotly.newPlot('scatter_plot', scatterPlot.data, scatterPlot.layout);
+
+        var pieChart = {{ pie_plot_json | safe }};
+        Plotly.newPlot('pie_chart', pieChart.data, pieChart.layout);
+    </script>
+</body>
+</html>
+

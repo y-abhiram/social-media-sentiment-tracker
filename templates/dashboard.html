@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sentiment Analysis Dashboard</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+<body>
+    <h1>📊 Sentiment Analysis Dashboard</h1>
+    <div>Total Tweets: <span id="total"></span></div>
+    <div>Average Sentiment Score: <span id="avg"></span></div>
+    <div id="scatter"></div>
+    <div id="pie"></div>
+
+    <script>
+        async function fetchDataAndUpdate() {
+            const response = await fetch('/data');
+            const data = await response.json();
+            const df = data;
+
+            let sentiments = df.map(row => row.sentiment);
+            let total = df.length;
+            let avg = sentiments.reduce((a, b) => a + b, 0) / total;
+
+            document.getElementById("total").textContent = total;
+            document.getElementById("avg").textContent = avg.toFixed(2);
+
+            const sentimentLabels = df.map(row => row.sentiment > 0.1 ? 'positive' : (row.sentiment < -0.1 ? 'negative' : 'neutral'));
+            const times = df.map(row => new Date(row.created_at));
+            const colors = sentimentLabels.map(label => label === 'positive' ? 'green' : (label === 'negative' ? 'red' : 'blue'));
+
+            const scatterTrace = {
+                x: times,
+                y: sentiments,
+                mode: 'markers',
+                marker: { color: colors },
+                text: df.map(row => row.text),
+                type: 'scatter'
+            };
+
+            Plotly.newPlot('scatter', [scatterTrace], { title: 'Sentiment Over Time' });
+
+            const pieData = ['positive', 'neutral', 'negative'].map(label => {
+                return {
+                    labels: ['positive', 'neutral', 'negative'],
+                    values: [sentimentLabels.filter(l => l === 'positive').length,
+                             sentimentLabels.filter(l => l === 'neutral').length,
+                             sentimentLabels.filter(l => l === 'negative').length],
+                    type: 'pie'
+                };
+            });
+
+            Plotly.newPlot('pie', pieData, { title: 'Sentiment Distribution' });
+        }
+
+        fetchDataAndUpdate();
+        setInterval(fetchDataAndUpdate, 10000);  // refresh every 10 seconds
+    </script>
+</body>
+</html>
+
